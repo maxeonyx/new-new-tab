@@ -57,7 +57,7 @@ body {
 
 header {
   background-color: rgba(0, 0, 0, 0.7);
-  box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.7);
   display: flex;
   padding: 0.5em;
   flex-direction: row;
@@ -80,18 +80,22 @@ main {
   justify-content: center;
   align-content: center;
   background-color: rgba(0, 0, 0, 0.7);
-  border-radius: 3px;
-  box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.3);
   margin: 10px;
-
+  cursor: pointer;
   display: flex;
   flex-direction: column;
+}
+.bookmark:hover {
+  position: relative;
+  left: 2px;
+  top: 2px;
+  box-shadow: 1px 1px 3px 3px rgba(0, 0, 0, 0.3);
 }
 
 .bookmark .img {
   flex: 1;
-  margin: 3px;
-  border-radius: 3px;
+  margin: 1px;
   background-repeat: no-repeat;
   background-size: 100%;
 }
