@@ -66,12 +66,12 @@ header {
 
 main {
   flex: 1;
-  padding-left: 15%;
-  padding-right: 15%;
+  padding-left: 5%;
+  padding-right: 5%;
   padding-top: 10%;
   display: grid;
-  grid-template-columns: repeat(5, calc(100% / 5));
-  grid-auto-rows: 10em;
+  grid-template-columns: repeat(5, calc(100vw/5));
+  grid-auto-rows: calc(100vw/8);
   grid-auto-flow: row;
 }
 
