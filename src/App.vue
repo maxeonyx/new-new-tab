@@ -1,43 +1,72 @@
 <template>
-  <body id="app">
-    <header>
-      <img id=logo src="./assets/logo.png">
-      <nav>
-        <div>Home</div>
-        <div>Comics</div>
-        <div>Programming</div>
-      </nav>
-    </header>
-    <main>
-      <div v-for="item in items" :key="item.name" class=bookmark>
-        <div class=img :style="'background-image: url(' + item.image + ');'"></div>
-        <div class=title>{{item.name}}</div>
-      </div>
-    </main>
-    <footer>
-
-    </footer>
-  </body>
+<body id="app" :style="body_style">
+  <header>
+    <img id="logo" src="./assets/logo.png">
+    <nav>
+      <div
+        v-for="tab in tabs"
+        :key="tab.name"
+        :class="current_tab === tab.name ? 'selected' : ''"
+        @click="change_tab(tab.name)"
+      >{{ tab.name }}</div>
+      <div class=filler />
+      <div
+        class="editor"
+        :class="current_tab === 'Editor' ? 'selected' : ''"
+        @click="change_tab('Editor')"
+      >Editor</div>
+    </nav>
+  </header>
+  <main>
+    <Tab v-for="tab in tabs" v-show="current_tab === tab.name" :key="tab.name" :content="tab"/>
+    <Editor v-show="current_tab === 'Editor'" v-on:input="updateData"/>
+  </main>
+  <footer></footer>
+</body>
 </template>
 
 <script>
+import Editor from "./components/Editor";
+import Tab from "./components/Tab";
+
 export default {
-  name: 'app',
+  name: "app",
   data() {
     return {
-      items: [
-        {
-          name: "Bookmark 1",
-          image: "https://i.imgur.com/mV7GwGj.jpg",
-        },
-        {
-          name: "Bookmark 2",
-          image: "https://i.imgur.com/mV7GwGj.jpg",
-        },
-      ],
+      current_tab: 'Home',
+      app_data: null,
     };
   },
-}
+  computed: {
+    tabs() {
+      if (!this.app_data) return [];
+      if (!this.app_data.tabs) return [];
+
+      return Object.keys(this.app_data.tabs).map(name => ({
+        name,
+        ...this.app_data.tabs[name]
+      }));
+    },
+    body_style() {
+      if (!this.app_data) return "";
+      if (!this.app_data.background_image) return "";
+
+      return "background-image: url(" + this.app_data.background_image + ");"
+    },
+  },
+  methods: {
+    change_tab(tab_name) {
+      this.current_tab = tab_name;
+    },
+    updateData(data) {
+      this.app_data = data;
+    },
+  },
+  components: {
+    Tab,
+    Editor
+  }
+};
 </script>
 
 <style>
@@ -46,7 +75,7 @@ html {
 }
 body {
   background-image: url(https://i.imgur.com/mV7GwGj.jpg);
-  background-size: 100%;
+  background-size: min(auto, 100vw) min(auto, 100vh);
   padding: 0;
   margin: 0;
   margin-top: 0;
@@ -66,45 +95,18 @@ header {
 
 main {
   flex: 1;
-  padding-left: 5%;
-  padding-right: 5%;
-  padding-top: 10%;
+  margin-left: 5vw;
+  margin-right: 5vw;
+  margin-top: 10%;
+  margin-bottom: 5%;
+}
+
+.tab-content {
   display: grid;
-  grid-template-columns: repeat(5, calc(100vw/5));
-  grid-auto-rows: calc(100vw/8);
+  grid-template-columns: repeat(5, calc(100vw / 5));
+  grid-auto-rows: calc(100vw / 8);
   grid-auto-flow: row;
 }
-
-.bookmark {
-  color: lightgray;
-  justify-content: center;
-  align-content: center;
-  background-color: rgba(0, 0, 0, 0.7);
-  box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.3);
-  margin: 10px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-}
-.bookmark:hover {
-  position: relative;
-  left: 2px;
-  top: 2px;
-  box-shadow: 1px 1px 3px 3px rgba(0, 0, 0, 0.3);
-}
-
-.bookmark .img {
-  flex: 1;
-  margin: 1px;
-  background-repeat: no-repeat;
-  background-size: 100%;
-}
-
-.bookmark .title {
-  font-weight: bold;
-  height: 1.3em;
-}
-
 
 footer {
   background-color: rgba(0, 0, 0, 0.7);
@@ -126,7 +128,19 @@ nav div {
   color: lightgray;
   text-align: center;
   padding: 0.5em;
-  padding-left: 1em;
+  margin-left: 1em;
+}
+
+nav div.selected {
+  border-bottom: 3px solid white;
+}
+
+nav div.filler {
+  flex: 1;
+}
+
+nav div.editor {
+  justify-self: flex-end;
 }
 
 #logo {
@@ -141,9 +155,4 @@ nav div {
   text-align: center;
   color: #2c3e50;
 }
-
-#app a {
-  display:block;
-}
-
 </style>
