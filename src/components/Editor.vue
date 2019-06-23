@@ -1,7 +1,6 @@
 <template>
     <div class=editor-panel>
-        <textarea :class="valid ? '' : 'invalid'" v-model="text" v-on:focusout="format"></textarea>
-        <input type="button" value="Format" @click="format" />
+        <textarea :class="valid ? '' : 'invalid'" v-model="text" v-on:focusout="format" />
     </div>
 </template>
 
@@ -74,13 +73,6 @@ export default {
 
 .editor-panel textarea.invalid {
     border: 3px solid red;
-}
-
-.editor-panel input {
-    position: absolute;
-    z-index: 1;
-    bottom: 3px;
-    right: 3px;
 }
 
 </style>
