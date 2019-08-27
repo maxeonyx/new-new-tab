@@ -1,7 +1,7 @@
 <template>
 <body id="app" :style="body_style">
   <header>
-    <img id="logo" src="./assets/logo.png" />
+    <img id="logo" src="/logo.png" />
     <nav>
       <div
         v-for="tab in tabs"

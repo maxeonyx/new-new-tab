@@ -25,6 +25,7 @@ export default {
   align-content: center;
   background-color: rgba(0, 0, 0, 0.7);
   box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.3);
+
   display: flex;
   flex-direction: column;
 }
@@ -41,7 +42,7 @@ export default {
   margin: 1px;
   background-repeat: no-repeat;
   background-position: center;
-  background-size: auto 100%;
+  background-size: contain;
 }
 
 .bookmark .title {
