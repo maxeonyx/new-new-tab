@@ -1,25 +1,25 @@
 <template>
 <body id="app" :style="body_style">
   <header>
-    <img id="logo" src="./assets/logo.png">
+    <img id="logo" src="./assets/logo.png" />
     <nav>
       <div
         v-for="tab in tabs"
         :key="tab.name"
-        :class="current_tab === tab.name ? 'selected' : ''"
+        :class="'tab ' + (current_tab === tab.name ? 'selected' : '')"
         @click="change_tab(tab.name)"
       >{{ tab.name }}</div>
-      <div class=filler />
+      <div class="filler" />
       <div
-        class="editor"
+        class="tab editor"
         :class="current_tab === 'Editor' ? 'selected' : ''"
         @click="change_tab('Editor')"
       >Editor</div>
     </nav>
   </header>
   <main>
-    <Tab v-for="tab in tabs" v-show="current_tab === tab.name" :key="tab.name" :content="tab"/>
-    <Editor v-show="current_tab === 'Editor'" v-on:input="updateData"/>
+    <Tab v-for="tab in tabs" v-show="current_tab === tab.name" :key="tab.name" :content="tab" />
+    <Editor v-show="current_tab === 'Editor'" v-on:input="updateData" />
   </main>
   <footer></footer>
 </body>
@@ -33,8 +33,8 @@ export default {
   name: "app",
   data() {
     return {
-      current_tab: 'Home',
-      app_data: null,
+      current_tab: "Home",
+      app_data: null
     };
   },
   computed: {
@@ -51,8 +51,8 @@ export default {
       if (!this.app_data) return "";
       if (!this.app_data.background_image) return "";
 
-      return "background-image: url(" + this.app_data.background_image + ");"
-    },
+      return "background-image: url(" + this.app_data.background_image + ");";
+    }
   },
   methods: {
     change_tab(tab_name) {
@@ -60,7 +60,7 @@ export default {
     },
     updateData(data) {
       this.app_data = data;
-    },
+    }
   },
   components: {
     Tab,
@@ -86,32 +86,45 @@ body {
 
 header {
   background-color: rgba(0, 0, 0, 0.7);
-  box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.7);
   display: flex;
   padding: 0.5em;
   flex-direction: row;
-  height: calc(3em - 5px);
+}
+
+footer {
+  background-color: rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.7);
+  height: calc(2em);
 }
 
 main {
   flex: 1;
   margin-left: 5vw;
   margin-right: 5vw;
-  margin-top: 10%;
-  margin-bottom: 5%;
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+}
+
+@media (max-width: 450px) {
+  .bookmark {
+    width: 100%;
+    height: 100px;
+  }
+}
+@media (min-width: 450px) {
+  .bookmark {
+    min-height: 200px;
+    min-width: 380px;
+  }
 }
 
 .tab-content {
-  display: grid;
-  grid-template-columns: repeat(5, calc(100vw / 5));
-  grid-auto-rows: calc(100vw / 8);
-  grid-auto-flow: row;
-}
-
-footer {
-  background-color: rgba(0, 0, 0, 0.7);
-  box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.7);
-  height: calc(2em);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
 }
 
 nav {
@@ -119,16 +132,20 @@ nav {
   flex: 1;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: flex-start;
   align-items: center;
 }
 
-nav div {
+nav .tab {
   cursor: pointer;
   color: lightgray;
   text-align: center;
   padding: 0.5em;
   margin-left: 1em;
+
+  /* transparent border when not selected means the element doesn't change size when selected */
+  border-bottom: 3px solid rgba(0, 0, 0, 0);
 }
 
 nav div.selected {
@@ -145,7 +162,6 @@ nav div.editor {
 
 #logo {
   height: 3em;
-  width: 3em;
 }
 
 #app {
