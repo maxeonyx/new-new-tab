@@ -1,5 +1,5 @@
 <template>
-  <a :href="content.link" target="_blank" rel="noreferrer noopener" class="bookmark">
+  <a :href="content.link" class="bookmark">
     <div class="img" :style="'background-image: url(' + content.image + ');'"></div>
     <div class="title">{{content.name}}</div>
   </a>
