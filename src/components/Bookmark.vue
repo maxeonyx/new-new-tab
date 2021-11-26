@@ -12,29 +12,54 @@ export default {
 </script>
 
 <style>
+
 .bookmark {
   /* Remove <a> styling */
   outline: 0;
   text-decoration: none;
 
+  border-radius: 10px;
+
   padding: 0.5em;
+  padding-top: 1.5em;
   margin: 10px;
 
   color: lightgray;
   justify-content: center;
   align-content: center;
-  background-color: rgba(0, 0, 0, 0.7);
-  box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.3);
+
+  background-color: rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 2px 4px 4px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 0 3px black, 0 0 3px black, 0 0 5px black, 0 0 7px black;
 
   display: flex;
   flex-direction: column;
+
+  min-height: 200px;
+  min-width: 220px;
+
+  user-select: none;
+  
 }
 
 .bookmark:hover {
   position: relative;
-  left: 2px;
-  top: 2px;
-  box-shadow: 1px 1px 3px 3px rgba(0, 0, 0, 0.3);
+  top: -2px;
+  box-shadow: 0px 5px 6px 6px rgba(0, 0, 0, 0.23);
+}
+
+@supports(backdrop-filter: none) {
+  .bookmark {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(6px);
+    box-shadow: 0px 2px 3px 3px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 0 8px black;
+  }
+  .bookmark:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    box-shadow: 0px 2px 4px 4px rgba(0, 0, 0, 0.06);
+  }
 }
 
 .bookmark .img {

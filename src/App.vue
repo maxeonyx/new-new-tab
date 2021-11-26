@@ -10,23 +10,18 @@
         @click="change_tab(tab.name)"
       >{{ tab.name }}</div>
       <div class="filler" />
-      <div
-        class="tab editor"
-        :class="current_tab === 'Editor' ? 'selected' : ''"
-        @click="change_tab('Editor')"
-      >Editor</div>
+      <div class="tab"><a target="_blank" href="https://gist.github.com/maxeonyx/fa60371050c93cc141fc0b2086bec30f/edit">Edit</a></div>
+      <img  class="tab refresh" src="/refresh.svg" 
+        @click="reloadGistData()" />
     </nav>
   </header>
   <main>
     <Tab v-for="tab in tabs" v-show="current_tab === tab.name" :key="tab.name" :content="tab" />
-    <Editor v-show="current_tab === 'Editor'" v-on:input="updateData" />
   </main>
-  <footer></footer>
 </body>
 </template>
 
 <script>
-import Editor from "./components/Editor";
 import Tab from "./components/Tab";
 
 export default {
@@ -34,8 +29,12 @@ export default {
   data() {
     return {
       current_tab: "Home",
-      app_data: null
+      app_data: null,
+      text: "",
     };
+  },
+  created() {
+    this.text = localStorage.getItem('editor_text');
   },
   computed: {
     tabs() {
@@ -54,17 +53,33 @@ export default {
       return "background-image: url(" + this.app_data.background_image + ");";
     }
   },
+  watch: {
+    text() {
+        localStorage.setItem('editor_text', this.text);
+        try {
+            let data = JSON.parse(this.text);
+            this.app_data = data;
+        } catch {
+            return;
+        }
+    }
+  },
   methods: {
     change_tab(tab_name) {
       this.current_tab = tab_name;
     },
     updateData(data) {
       this.app_data = data;
+    },
+    async reloadGistData() {
+        this.text = localStorage.getItem('editor_text');
+        let response = await fetch('https://api.github.com/gists/fa60371050c93cc141fc0b2086bec30f');
+        let data = await response.json();
+        this.text = data.files["new-new-tab-data.json"].content;
     }
   },
   components: {
-    Tab,
-    Editor
+    Tab
   }
 };
 </script>
@@ -74,8 +89,9 @@ html {
   height: 100%;
 }
 body {
-  background-image: url(https://i.imgur.com/mV7GwGj.jpg);
-  background-size: min(auto, 100vw) min(auto, 100vh);
+  background-image: url(/background.jpg);
+  background-position: center;
+  background-size: cover;
   padding: 0;
   margin: 0;
   margin-top: 0;
@@ -85,17 +101,23 @@ body {
 }
 
 header {
-  background-color: rgba(0, 0, 0, 0.7);
-  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 7px black;
   display: flex;
   padding: 0.5em;
   flex-direction: row;
+
+  user-select: none;
 }
 
-footer {
-  background-color: rgba(0, 0, 0, 0.7);
-  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.7);
-  height: calc(2em);
+@supports(backdrop-filter: none) {
+  header {
+    backdrop-filter: blur(6px);
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 0 5px black, 0 0 7px black;
+  }
 }
 
 main {
@@ -104,19 +126,6 @@ main {
   margin-right: 5vw;
   margin-top: 5vh;
   margin-bottom: 5vh;
-}
-
-@media (max-width: 450px) {
-  .bookmark {
-    width: 100%;
-    height: 100px;
-  }
-}
-@media (min-width: 450px) {
-  .bookmark {
-    min-height: 200px;
-    min-width: 380px;
-  }
 }
 
 .tab-content {
@@ -148,7 +157,21 @@ nav .tab {
   border-bottom: 3px solid rgba(0, 0, 0, 0);
 }
 
-nav div.selected {
+nav .tab a {
+  color: inherit;
+  text-decoration: none;
+}
+
+nav .tab:hover {
+  border-bottom: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+nav .refresh {
+  height: 1.2em;
+  width: 1.2em;
+}
+
+nav .tab.selected {
   border-bottom: 3px solid white;
 }
 
