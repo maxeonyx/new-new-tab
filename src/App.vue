@@ -9,7 +9,7 @@
         :class="'tab ' + (current_tab === tab.name ? 'selected' : '')"
         @click="change_tab(tab.name)"
       >{{ tab.name }}</div>
-      <div class="filler" />
+      <div class="filler"></div>
       <div class="tab"><a target="_blank" href="https://gist.github.com/maxeonyx/fa60371050c93cc141fc0b2086bec30f/edit">Edit</a></div>
       <img  class="tab refresh" src="/refresh.svg" 
         @click="reloadGistData()" />
@@ -17,6 +17,12 @@
   </header>
   <main>
     <Tab v-for="tab in tabs" v-show="current_tab === tab.name" :key="tab.name" :content="tab" />
+    <div v-show="profile === null" class=tab-content>
+      <div v-for="profile in profiles" @click="setProfile(profile)" class="bookmark">
+        <div class="img"></div>
+        <div class="title" >{{profile}}</div>
+      </div>
+    </div>
   </main>
 </body>
 </template>
@@ -28,13 +34,16 @@ export default {
   name: "app",
   data() {
     return {
-      current_tab: "Home",
+      profile: null,
+      profiles: [],
+      current_tab: null,
       app_data: null,
       text: "",
     };
   },
   created() {
-    this.text = localStorage.getItem('editor_text');
+    this.profile = localStorage.getItem('profile');
+    this.app_data = JSON.parse(localStorage.getItem('app_data'));
   },
   computed: {
     tabs() {
@@ -54,14 +63,15 @@ export default {
     }
   },
   watch: {
-    text() {
-        localStorage.setItem('editor_text', this.text);
-        try {
-            let data = JSON.parse(this.text);
-            this.app_data = data;
-        } catch {
-            return;
+    app_data() {
+      if (this.app_data) {
+        localStorage.setItem('app_data', JSON.stringify(this.app_data));
+        if (this.current_tab === null) {
+          if (Object.keys(this.app_data.tabs).length > 0) {
+            this.current_tab = Object.keys(this.app_data.tabs)[0];
+          }
         }
+      }
     }
   },
   methods: {
@@ -71,11 +81,29 @@ export default {
     updateData(data) {
       this.app_data = data;
     },
+    async get_gist() {
+      let response = await fetch('https://api.github.com/gists/fa60371050c93cc141fc0b2086bec30f');
+      let data = await response.json();
+      let files = {};
+      for (let filename of Object.keys(data.files)) {
+        let f = data.files[filename];
+        try {
+          files[filename] = JSON.parse(f.content);
+        } catch {
+          console.log("Failed to parse " + filename);
+        }
+      }
+      this.profiles = Object.keys(files);
+      return files;
+    },
     async reloadGistData() {
-        this.text = localStorage.getItem('editor_text');
-        let response = await fetch('https://api.github.com/gists/fa60371050c93cc141fc0b2086bec30f');
-        let data = await response.json();
-        this.text = data.files["new-new-tab-data.json"].content;
+      let files = await this.get_gist();
+      this.app_data = files[this.profile];
+    },
+    async setProfile(profile) {
+      this.profile = profile;
+      localStorage.setItem('profile', this.profile);
+      await this.reloadGistData();
     }
   },
   components: {

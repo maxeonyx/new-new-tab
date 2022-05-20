@@ -39,7 +39,7 @@ export default {
   min-width: 220px;
 
   user-select: none;
-  
+  cursor: pointer;
 }
 
 .bookmark:hover {
