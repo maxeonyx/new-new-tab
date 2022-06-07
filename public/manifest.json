@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "New New Tab",
-    "version": "1.4.1",
+    "version": "1.4.2",
     "description": "Custom New Tab page",
     "icons": {
         "48": "logo.png"
@@ -10,6 +10,12 @@
         "newtab": "index.html"
     },
     "chrome_settings_overrides": {
+        "search_provider": {
+            "name": "Google",
+            "search_url": "https://www.google.com/search?q={searchTerm}",
+            "favicon_url": "https://www.google.com/favicon.ico",
+            "keyword": "google"
+        },
         "homepage": "index.html"
     }
 }
